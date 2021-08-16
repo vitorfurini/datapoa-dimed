@@ -33,7 +33,4 @@ public class Itinerario implements Serializable {
 
     @Column(name = "idlinha", nullable = false)
     private Long idLinha;
-
-    @Column(name = "nome", nullable = false)
-    private Long nome;
 }
