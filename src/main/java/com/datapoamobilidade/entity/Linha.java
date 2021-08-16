@@ -1,6 +1,5 @@
 package com.datapoamobilidade.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,6 @@ import javax.persistence.Table;
 @Table(name = "linha")
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class Linha implements Serializable {
 
@@ -31,4 +29,9 @@ public class Linha implements Serializable {
     @Column(nullable = false)
     private String nome;
 
+    public Linha(Long id, String codigo, String nome) {
+        this.id = id;
+        this.codigo = codigo;
+        this.nome = nome;
+    }
 }
