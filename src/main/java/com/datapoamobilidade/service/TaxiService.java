@@ -5,6 +5,7 @@ import com.datapoamobilidade.repository.TaxiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,14 +21,14 @@ import java.util.Optional;
 @Service
 public class TaxiService {
 
-    private TaxiRepository taxiRepository;
+    private final TaxiRepository taxiRepository;
 
     @Autowired
     public TaxiService(TaxiRepository taxiRepository) {
         this.taxiRepository = taxiRepository;
     }
 
-    public Collection<Taxi> findAll() {
+    public List<Taxi> findAll() {
         return taxiRepository.findAll();
     }
 
@@ -39,8 +40,10 @@ public class TaxiService {
         return taxiRepository.save(pontoTaxi);
     }
 
-    public void delete(Optional<Taxi> pontoTaxi) throws DataAccessException {
-        taxiRepository.delete(pontoTaxi.get());
+    @Transactional
+    public void delete(Long idTaxi) {
+        var taxiDeleted = taxiRepository.findById(idTaxi);
+        taxiRepository.deleteById(taxiDeleted.orElseThrow().getId());
     }
 
     public Collection<String> readTaxiTxt() throws IOException {

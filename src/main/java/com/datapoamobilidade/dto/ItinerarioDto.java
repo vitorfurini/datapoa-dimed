@@ -26,14 +26,4 @@ public class ItinerarioDto implements Serializable {
         this.longitude = longitude;
         this.idLinha = idLinha;
     }
-
-    public static ItinerarioDto valueOf(Itinerario itinerario) {
-        return new ItinerarioDto(itinerario.getId(),
-                itinerario.getLatitude(),
-                itinerario.getLongitude(),
-                itinerario.getIdLinha());
-    }
-    public Itinerario valueOf() {
-        return new Itinerario(getId(), getLatitude(), getLongitude(), getIdLinha());
-    }
 }

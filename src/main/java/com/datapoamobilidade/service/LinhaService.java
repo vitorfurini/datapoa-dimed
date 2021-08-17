@@ -1,9 +1,9 @@
 package com.datapoamobilidade.service;
 
-import com.datapoamobilidade.OperacaoEnum;
 import com.datapoamobilidade.constantes.Constantes;
 import com.datapoamobilidade.dto.LinhaDto;
 import com.datapoamobilidade.entity.Linha;
+import com.datapoamobilidade.enums.OperacaoEnum;
 import com.datapoamobilidade.repository.LinhaRepository;
 import exceptions.BusinessException;
 import okhttp3.OkHttpClient;

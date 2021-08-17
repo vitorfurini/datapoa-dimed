@@ -1,7 +1,6 @@
-package com.datapoamobilidade;
+package com.datapoamobilidade.enums;
 
 public enum OperacaoEnum {
-
     UPDATE(1, "UPDATE"),
     CREATE(2, "CREATE");
 

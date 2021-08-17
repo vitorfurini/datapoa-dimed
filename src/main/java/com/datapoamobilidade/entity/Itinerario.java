@@ -33,4 +33,10 @@ public class Itinerario implements Serializable {
 
     @Column(name = "idlinha", nullable = false)
     private Long idLinha;
+
+    public Itinerario(Long idLinha, Double latitude, Double longitude) {
+        this.idLinha = idLinha;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }

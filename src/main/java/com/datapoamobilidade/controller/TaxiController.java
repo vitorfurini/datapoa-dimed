@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
-import javax.transaction.Transactional;
 
 @RestController
 @RequestMapping("/api/v1/pontotaxi")
@@ -36,12 +35,13 @@ public class TaxiController {
         for (Taxi l : list) {
             if (l.getId().equals(taxi.getId())) {
                 exist = true;
+                break;
             }
         }
 
         Taxi pt = new Taxi();
 
-        if (exist == false) {
+        if (!exist) {
             if (!taxi.getNomeDoPonto().isEmpty() && taxi.getLatitude() != null && taxi.getLongitude() != null) {
                 pt = taxiService.save(taxi);
                 return new ResponseEntity<Taxi>(pt, HttpStatus.CREATED);
@@ -59,13 +59,8 @@ public class TaxiController {
 
     @ApiOperation(value = "Deleta ponto de taxi do  Database a partir de seu ID.")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
-    @Transactional
     public ResponseEntity<Void> deleteTaxi(@PathVariable("id") Long id) {
-        Optional<Taxi> taxi = this.taxiService.findById(id);
-        if (taxi == null) {
-            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
-        }
-        this.taxiService.delete(taxi);
+        taxiService.delete(id);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 

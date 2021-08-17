@@ -30,9 +30,7 @@ public class ItinerarioController {
 
     private final ItinerarioService itinerarioService;
 
-    private List<ItinerarioDto> lista;
     private ItinerarioDto dto;
-    private boolean found;
     private String message;
 
     @Autowired
@@ -75,7 +73,7 @@ public class ItinerarioController {
     ResponseEntity<List<ItinerarioDto>> buscarPorLinha(@Valid @RequestParam(name = "idlinha") String idlinha) {
 
         try {
-            lista = itinerarioService.findByIdLinha(idlinha);
+            List<ItinerarioDto> lista = itinerarioService.findByIdLinha(idlinha);
 
             if (lista == null || lista.size() == 0) {
                 throw new BusinessException("Não foram encontrados itineários para a linha de ônibus.");
@@ -97,7 +95,7 @@ public class ItinerarioController {
                 throw new BusinessException(message);
             }
 
-            found = itinerarioService.existByItinerario(itinerarioDto);
+            boolean found = itinerarioService.existByItinerario(itinerarioDto);
             dto = itinerarioService.findByLinhaDataBank(itinerarioDto);
 
             boolean founddatabank = true;
@@ -119,7 +117,7 @@ public class ItinerarioController {
             throw new BusinessException(e.getMessage());
         }
 
-        return new ResponseEntity<>(ItinerarioDto.valueOf(itinerarioService.save(itinerarioDto)), HttpStatus.OK);
+        return new ResponseEntity<>(itinerarioService.save(itinerarioDto), HttpStatus.OK);
     }
 
     @PutMapping("/update")
@@ -141,7 +139,7 @@ public class ItinerarioController {
             throw new BusinessException(e.getMessage());
         }
 
-        return new ResponseEntity<>(com.datapoamobilidade.dto.ItinerarioDto.valueOf(itinerarioService.save(dto)), HttpStatus.OK);
+        return new ResponseEntity<>(itinerarioService.save(dto), HttpStatus.OK);
 
     }
 

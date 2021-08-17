@@ -12,8 +12,10 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +33,9 @@ import static java.lang.Math.sin;
 public class ItinerarioService {
 
     private final ItinerarioRepository itinerarioRepository;
+
+    @Autowired
+    ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
     public ItinerarioService(ItinerarioRepository itinerarioRepository) {
@@ -103,9 +108,6 @@ public class ItinerarioService {
         return lista;
     }
 
-    /*
-        Busca Itinerarios de linhas de ônibus via integração PoaTransporte
-     */
     public List<ItinerarioDto> findByIdLinha(String idLinha) {
 
         OkHttpClient httpClient = new OkHttpClient();
@@ -221,24 +223,21 @@ public class ItinerarioService {
 
     }
 
-    /*
-        Verifica se itinerario já existe
-     */
-    public boolean existByItinerario(ItinerarioDto ItinerarioDto) {
-        List<ItinerarioDto> lista = this.findByIdLinha(ItinerarioDto.getIdLinha().toString());
+    public boolean existByItinerario(ItinerarioDto itinerarioDto) {
+        List<ItinerarioDto> lista = this.findByIdLinha(itinerarioDto.getIdLinha().toString());
 
-        boolean foundIntegracao = (lista.size() > 0 ? true : false);
+        boolean foundIntegracao = (lista.size() > 0);
         boolean found = true;
 
         if (foundIntegracao) {
 
             for(ItinerarioDto dto : lista) {
-                if (ItinerarioDto.getLatitude() != dto.getLatitude()) {
+                if (itinerarioDto.getLatitude() != dto.getLatitude()) {
                     found = false;
                     break;
                 }
 
-                if (ItinerarioDto.getLongitude() != dto.getLongitude()) {
+                if (itinerarioDto.getLongitude() != dto.getLongitude()) {
                     found = false;
                     break;
                 }
@@ -250,9 +249,6 @@ public class ItinerarioService {
         return foundIntegracao;
     }
 
-    /*
-        Busca itinerario de linha de ônibus por ID
-     */
     public Optional<Itinerario> findById(Long id) {
 
         Optional<Itinerario> itinerario = null;
@@ -271,16 +267,14 @@ public class ItinerarioService {
         return itinerarioRepository.findByLinha(itinerarioDto.getIdLinha());
     }
 
-    /*
-        Salva dados de novo itinerario na base de dados
-     */
-    public Itinerario save(ItinerarioDto itinerarioDto) {
-        return itinerarioRepository.save(itinerarioDto.valueOf());
+    @Transactional
+    public ItinerarioDto save(ItinerarioDto dto) {
+        var itinerarioSave = new Itinerario(dto.getIdLinha(), dto.getLatitude(), dto.getLongitude());
+        itinerarioRepository.save(itinerarioSave);
+
+        return modelMapper.map(itinerarioSave, ItinerarioDto.class);
     }
 
-    /*
-        Método usado para DELETE - via DELETE
-     */
     public void delete(Long id) {
         Itinerario itinerario = this.findById(id).get();
         itinerarioRepository.delete(itinerario);
